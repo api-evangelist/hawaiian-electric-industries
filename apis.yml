@@ -23,6 +23,8 @@ position: Consumer
 access: 3rd-Party
 apis: []
 common:
+  - type: LinkedIn
+    url: https://www.linkedin.com/company/hawaiianelectricindustries
   - type: Website
     url: https://www.hei.com/
   - type: Subsidiary
