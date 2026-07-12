@@ -24,6 +24,8 @@ position: Consumer
 access: 3rd-Party
 apis: []
 common:
+  - type: DomainSecurity
+    url: security/hawaiian-electric-industries-domain-security.yml
   - type: LinkedIn
     url: https://www.linkedin.com/company/hawaiianelectricindustries
   - type: Website
