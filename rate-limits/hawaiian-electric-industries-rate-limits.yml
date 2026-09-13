@@ -1,0 +1,63 @@
+generated: '2026-09-13'
+method: probed
+source: https://services5.arcgis.com/gfBpz2hbsVDgru6D/ArcGIS/rest/services/extLVM/FeatureServer/0?f=json
+docs: null
+note: >-
+  Hawaiian Electric publishes no rate-limit documentation. The limits below are not prose — they
+  are read verbatim from the service's own machine-readable metadata and from the response headers
+  observed on a live anonymous query, which is the only runtime signal this surface emits. No
+  X-RateLimit-*, RateLimit-* or Retry-After header was returned on any probe; the only usage
+  counter Esri emits is `x-esri-query-request-units`.
+limit_count: 3
+rate_limits:
+  - scope: per-request
+    name: maxRecordCount
+    limit: 1000
+    unit: features per query response
+    window: null
+    burst: null
+    evidence: https://services5.arcgis.com/gfBpz2hbsVDgru6D/ArcGIS/rest/services/extLVM/FeatureServer/0?f=json
+    note: >-
+      A single /query returns at most 1,000 features. Paging past it uses resultOffset +
+      resultRecordCount (advancedQueryCapabilities.supportsPagination = true).
+  - scope: per-request
+    name: standardMaxRecordCount
+    limit: 2000
+    unit: features per query response in standard mode
+    window: null
+    burst: null
+    evidence: https://services5.arcgis.com/gfBpz2hbsVDgru6D/ArcGIS/rest/services/extLVM/FeatureServer/0?f=json
+  - scope: per-request
+    name: maxIdsCount
+    limit: 1000000
+    unit: object IDs per returnIdsOnly query
+    window: null
+    burst: null
+    evidence: https://services5.arcgis.com/gfBpz2hbsVDgru6D/ArcGIS/rest/services/extLVM/FeatureServer/0?f=json
+response_headers:
+  observed:
+    - name: x-esri-query-request-units
+      example: '2'
+      note: >-
+        Esri's per-query cost counter, returned on every /query response. It meters ArcGIS Online
+        credit consumption for the tenant, not a caller quota — a client cannot compute remaining
+        budget from it.
+    - name: cache-control
+      example: public, max-age=30, s-maxage=30
+      note: 30-second edge cache; the LVM layers are refreshed nightly on weekdays.
+    - name: etag
+      example: sd27111_1864140933
+  absent:
+    - X-RateLimit-Limit
+    - X-RateLimit-Remaining
+    - X-RateLimit-Reset
+    - RateLimit-Limit
+    - RateLimit-Remaining
+    - RateLimit-Reset
+    - Retry-After
+exhaustion:
+  status_code: null
+  note: >-
+    No throttling response was observed and none is documented. Esri returns quota and throttling
+    failures for hosted feature services inside the HTTP 200 error envelope
+    {"error":{"code":...,"message":...}}, so a caller must inspect the body rather than the status.

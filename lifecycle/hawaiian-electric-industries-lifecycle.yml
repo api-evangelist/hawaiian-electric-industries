@@ -1,0 +1,51 @@
+generated: '2026-09-13'
+method: searched
+source: >-
+  www.hawaiianelectric.com and www.hei.com read in full; DNS probes for status.* hosts; service
+  metadata from https://services5.arcgis.com/gfBpz2hbsVDgru6D/ArcGIS/rest/services
+note: >-
+  Recorded so the absence is legible rather than untested. Hawaiian Electric Industries publishes
+  no API versioning policy, no deprecation policy, no SLA and no developer status page. No
+  StatusPage or Deprecation pointer is emitted, because there is nothing to point at.
+versioning:
+  policy_url: null
+  scheme: vendor-controlled
+  current_version: '12'
+  detail: >-
+    `currentVersion: 12` is Esri's ArcGIS Online platform version reported by the service root,
+    not a Hawaiian Electric API version a caller can pin. There is no version segment in the path
+    and no documented compatibility commitment. Environment is carried in the service NAME
+    instead — extLVM vs extLVM_tst vs extLVM_dev — with nothing in the metadata marking which is
+    production.
+deprecation:
+  policy_url: null
+  sunset_header: false
+  deprecation_header: false
+  rfc8594: false
+  deprecated_operations: []
+  detail: >-
+    No deprecation policy, no Sunset or Deprecation response headers observed, and no changelog.
+    A layer can be unshared or renamed without notice; the only signal a consumer would get is a
+    query that starts returning {"error":{"code":400}} with HTTP 200.
+sla:
+  published: false
+  url: null
+status_page:
+  published: false
+  url: null
+  detail: >-
+    status.hawaiianelectric.com and status.hei.com do not resolve (NXDOMAIN). The public outage
+    maps at /safety-and-outages/power-outages report electricity service status to retail
+    customers — they are not an API or platform status page and are not wired as StatusPage.
+data_freshness:
+  - surface: Locational Value Map feature services
+    cadence: updated nightly on weekdays
+    source: https://www.hawaiianelectric.com/clean-energy-hawaii/integration-tools-and-resources/locational-value-maps
+  - surface: Outage maps
+    cadence: updated every 15 minutes
+    source: https://www.hawaiianelectric.com/safety-and-outages/power-outages/oahu-outage-map
+support:
+  developer_channel: false
+  detail: >-
+    No developer support channel, forum or contact address for the data surfaces. General customer
+    service only.

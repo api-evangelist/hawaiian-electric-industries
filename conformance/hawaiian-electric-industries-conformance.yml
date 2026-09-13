@@ -1,0 +1,89 @@
+generated: '2026-09-13'
+method: probed
+source: >-
+  Live probes of the Hawaiian Electric ArcGIS REST feature services
+  (https://services5.arcgis.com/gfBpz2hbsVDgru6D/ArcGIS/rest/services) plus the provider's own
+  customer-facing pages on www.hawaiianelectric.com.
+note: >-
+  Hawaiian Electric's only public machine-readable surface is an Esri ArcGIS REST Feature Service
+  catalog. It is self-describing (?f=json), but it is NOT an OGC surface: OGC API Features
+  (/OGCFeatureServer) and WFS (/FeatureServer/WFSServer?service=WFS&request=GetCapabilities)
+  were both probed on three services and neither is enabled. Nothing here is derived from prose —
+  every `conforms: true` points at a document that was fetched.
+conformance:
+  - id: arcgis-rest-feature-service
+    label: Esri ArcGIS REST Feature Service (currentVersion 12)
+    conforms: true
+    evidence: https://services5.arcgis.com/gfBpz2hbsVDgru6D/ArcGIS/rest/services/extLVM/FeatureServer?f=json
+    note: >-
+      Self-describing service metadata with layers[], fields[], capabilities "Query",
+      maxRecordCount 1000 and supportsPagination true. Anonymous read confirmed against
+      /FeatureServer/0/query (HTTP 200).
+  - id: geojson
+    label: GeoJSON output (RFC 7946 / Esri f=geojson)
+    conforms: true
+    evidence: https://services5.arcgis.com/gfBpz2hbsVDgru6D/ArcGIS/rest/services/extLVM/FeatureServer?f=json
+    note: >-
+      supportedExportFormats includes geojson, alongside csv, shapefile, sqlite, geoPackage,
+      filegdb, featureCollection, kml and excel.
+  - id: ogc-api-features
+    label: OGC API - Features
+    conforms: false
+    evidence: https://services5.arcgis.com/gfBpz2hbsVDgru6D/arcgis/rest/services/extLVM/OGCFeatureServer/conformance?f=json
+    note: >-
+      Probed on extLVM, GridNeeds_HECO and HECO_EV_Stations. All return
+      {"error":{"code":400,"message":"Invalid URL"}} — the OGC Features endpoint is not enabled
+      on this tenant. No conformsTo[] document exists, so no opengis.net classes are recorded.
+  - id: ogc-wfs
+    label: OGC Web Feature Service (GetCapabilities)
+    conforms: false
+    evidence: https://services5.arcgis.com/gfBpz2hbsVDgru6D/arcgis/rest/services/extLVM/FeatureServer/WFSServer?service=WFS&request=GetCapabilities
+    note: >-
+      Returns an Esri REST error page, not a WFS_Capabilities XML root. WFS is not enabled.
+      No GetCapabilities document was fetched, so none is registered.
+  - id: oauth2
+    label: OAuth 2.0
+    conforms: false
+    evidence: https://www.hei.com/.well-known/oauth-authorization-server
+    note: >-
+      No authorization-server or OpenID Connect metadata is served on any host. The internal
+      outage API answers `WWW-Authenticate: Bearer` but publishes no token endpoint or metadata.
+  - id: rfc9457
+    label: RFC 9457 Problem Details for HTTP APIs
+    conforms: false
+    evidence: https://services5.arcgis.com/gfBpz2hbsVDgru6D/ArcGIS/rest/services/extLVM/OGCFeatureServer?f=json
+    note: >-
+      Errors use the Esri envelope {"error":{"code","message","details"}} returned with HTTP 200,
+      not application/problem+json.
+domain_standards:
+  - id: green-button
+    label: Green Button (NAESB REQ.21 / ESPI)
+    conforms: false
+    evidence: https://www.hawaiianelectric.com/clean-energy-hawaii/grid-modernization-technologies/advanced-meters/my-energy-use-portal
+    note: >-
+      REWARD-ONLY, and it is NOT awarded here. Hawaiian Electric's My Energy Use portal states
+      "Download your usage data in Green Button or CSV format" — that is Green Button Download My
+      Data, a file a signed-in customer exports, reached only through the SAP customer login at
+      eservice.hawaiianelectric.com/bdisu/logon.sap. No Green Button Connect My Data / ESPI
+      OAuth 2.0 contract, third-party registration, DataCustodian resource root or ApplicationInformation
+      endpoint is published anywhere on the provider's surface, so the standard is claimed in prose
+      but not declared by any contract we could fetch.
+  - id: ieee-2030-5
+    label: IEEE 2030.5 (Smart Energy Profile 2.0)
+    conforms: false
+    evidence: https://www.hawaiianelectric.com/clean-energy-hawaii/integration-tools-and-resources/locational-value-maps
+    note: No 2030.5 server, DeviceCapability document or function-set reference published.
+  - id: openadr
+    label: OpenADR
+    conforms: false
+    evidence: https://www.hawaiianelectric.com/products-and-services/smart-renewable-energy-programs/cit-cid
+    note: >-
+      Hawaiian Electric runs demand-response programs (Battery Bonus, Grid Services) but publishes
+      no OpenADR VTN endpoint or profile declaration.
+compliance:
+  published: false
+  note: >-
+    No trust center, SOC 2 / ISO 27001 attestation page, or security certification listing was
+    found on hei.com, hawaiianelectric.com or pacificcurrenthawaii.com. Regulatory oversight is
+    via the Hawaii Public Utilities Commission rather than a published compliance program, so no
+    `Compliance` pointer is emitted.

@@ -1,0 +1,70 @@
+# Hawaiian Electric Industries (HEI)
+
+> Honolulu-based utility holding company. Its principal subsidiary, Hawaiian Electric, delivers
+> electricity to roughly 95% of Hawaii's residents through three operating utilities — Hawaiian
+> Electric (Oahu, "HECO"), Hawaii Electric Light (Hawaii Island, "HELCO") and Maui Electric
+> (Maui County, "MECO") — alongside Pacific Current, its clean-energy investment arm.
+
+## What an agent can and cannot call
+
+HEI runs no developer program. There is no OpenAPI or Swagger document, no GraphQL endpoint, no
+MCP server, no A2A agent card, no SDK on any package registry, no CLI, no sandbox, no changelog
+and no /.well-known/ document on any HEI host. Probed 2026-09-13.
+
+There is exactly ONE public, machine-readable, anonymously callable surface: an Esri ArcGIS REST
+feature-service catalog. It is read-only (capabilities: Query), needs no key, and is the same
+service the company's own map applications load.
+
+## Callable surface
+
+- [ArcGIS REST service catalog](https://services5.arcgis.com/gfBpz2hbsVDgru6D/ArcGIS/rest/services?f=json): 23 FeatureServers shared publicly. Self-describing JSON.
+- [Locational Value Map — Oahu (extLVM)](https://services5.arcgis.com/gfBpz2hbsVDgru6D/ArcGIS/rest/services/extLVM/FeatureServer/0): available hosting capacity in kW, DG penetration bands by circuit peak and daytime minimum, and interconnection pre-approval eligibility, per service address polygon.
+- [Locational Value Map — Hawaii Island (extLVM_HELCO)](https://services5.arcgis.com/gfBpz2hbsVDgru6D/ArcGIS/rest/services/extLVM_HELCO/FeatureServer/0)
+- [Locational Value Map — Maui County (extLVM_MECO)](https://services5.arcgis.com/gfBpz2hbsVDgru6D/ArcGIS/rest/services/extLVM_MECO/FeatureServer/0)
+- [Grid needs — Oahu (GridNeeds_HECO)](https://services5.arcgis.com/gfBpz2hbsVDgru6D/ArcGIS/rest/services/GridNeeds_HECO/FeatureServer/0): need, time of day, MW, year of need, certainty rating.
+- [Grid needs — Hawaii Island (GridNeeds_HELCO)](https://services5.arcgis.com/gfBpz2hbsVDgru6D/ArcGIS/rest/services/GridNeeds_HELCO/FeatureServer/0)
+- [Grid needs — Maui County (GridNeeds_MECO)](https://services5.arcgis.com/gfBpz2hbsVDgru6D/ArcGIS/rest/services/GridNeeds_MECO/FeatureServer/0)
+- [EV charging stations (HECO_EV_Stations)](https://services5.arcgis.com/gfBpz2hbsVDgru6D/ArcGIS/rest/services/HECO_EV_Stations/FeatureServer/0): property, address, island, charger detail, hours, payment options, lat/long.
+
+## How to call it
+
+- Query: `GET <layer>/query?where=1%3D1&outFields=*&returnGeometry=false&f=json`
+- Formats: `f=json`, `f=geojson`, `f=pbf`; export also offers csv, kml, geoPackage, shapefile, filegdb, excel.
+- Paging: `resultOffset` + `resultRecordCount`. Page size is capped at 1000 (2000 standard); a
+  capped response sets `exceededTransferLimit: true`.
+- ERRORS COME BACK WITH HTTP 200. Parse the body and test for an `error` key —
+  `{"error":{"code":400,"message":"Invalid URL","details":[...]}}`. This is not RFC 9457.
+- No rate-limit headers are returned. `x-esri-query-request-units` is Esri's tenant credit cost,
+  not your remaining quota.
+- Production versus test is carried in the service NAME only: `extLVM` is production,
+  `extLVM_tst` and `extLVM_dev` are not, and nothing in the metadata says so.
+
+## Not available to agents
+
+- Outage data: the outage maps at hawaiianelectric.com are a Blazor client over
+  `https://outagemap-api-heco.azurewebsites.net/api/v1/` which answers 401 with
+  `WWW-Authenticate: Bearer`. Tokens are minted only for that client; there is no registration
+  path, no documented scopes and no metadata document. Do not treat it as an available API.
+- Customer energy data: Green Button is offered as a file DOWNLOAD to signed-in customers through
+  the SAP portal at eservice.hawaiianelectric.com. Green Button Connect My Data / ESPI — the
+  OAuth 2.0 delegated path a third party would need — is not published.
+- Interconnection filing: the Customer Interconnection Tool at forms.hawaiianelectric.com is a
+  human web application behind a login, not an API.
+
+## Reference
+
+- [Locational Value Maps](https://www.hawaiianelectric.com/clean-energy-hawaii/integration-tools-and-resources/locational-value-maps)
+- [Customer Interconnection Tool (CIT)](https://www.hawaiianelectric.com/products-and-services/smart-renewable-energy-programs/cit-cid)
+- [Power outages and outage maps](https://www.hawaiianelectric.com/safety-and-outages/power-outages)
+- [My Energy Use portal](https://www.hawaiianelectric.com/clean-energy-hawaii/grid-modernization-technologies/advanced-meters/my-energy-use-portal)
+- [Rates and regulations](https://www.hawaiianelectric.com/billing-and-payment/rates-and-regulations)
+- [Terms of use](https://www.hawaiianelectric.com/terms-of-use)
+- [Customer information privacy policy](https://www.hawaiianelectric.com/privacy-notice/customer-information-privacy-policy)
+- [HEI investor relations](https://www.hei.com/investor-relations/)
+- [Pacific Current](https://pacificcurrenthawaii.com/)
+
+## Provenance
+
+Generated 2026-09-13 by the API Evangelist enrichment pipeline from artifacts in this repository
+and from live probes. Method: generated — Hawaiian Electric serves no /llms.txt of its own
+(https://www.hawaiianelectric.com/llms.txt returns 404, https://www.hei.com/llms.txt returns 404).

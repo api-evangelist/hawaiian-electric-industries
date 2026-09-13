@@ -1,0 +1,147 @@
+generated: '2026-09-13'
+method: probed
+source: >-
+  Direct HTTPS probes of the five named /.well-known/ paths on every host this record knows
+  (hei.com + www, hawaiianelectric.com + www, pacificcurrenthawaii.com, and the first-party
+  API hosts found during contract discovery).
+note: >-
+  NO /.well-known/ document is served by any Hawaiian Electric Industries host. www.hei.com and
+  hei.com answer HTTP 200 with an 11-byte body reading "Invalid key" for EVERY /.well-known/*
+  path — a catch-all soft-200 from the Q4 Inc investor-relations platform, not a document, so it
+  is recorded as a miss. hawaiianelectric.com and pacificcurrenthawaii.com return real 404s.
+  No WellKnown or SecurityTxt pointer is emitted, because nothing was actually served.
+hosts:
+  - host: www.hei.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 200
+        file: null
+        note: soft-200 catch-all, 11-byte body "Invalid key" — not a document
+      - path: /.well-known/openid-configuration
+        status: 200
+        file: null
+        note: soft-200 catch-all, 11-byte body "Invalid key" — not a document
+      - path: /.well-known/oauth-authorization-server
+        status: 200
+        file: null
+        note: soft-200 catch-all, 11-byte body "Invalid key" — not a document
+      - path: /.well-known/api-catalog
+        status: 200
+        file: null
+        note: soft-200 catch-all, 11-byte body "Invalid key" — not a document
+      - path: /.well-known/ai-plugin.json
+        status: 200
+        file: null
+        note: soft-200 catch-all, 11-byte body "Invalid key" — not a document
+      - path: /.well-known/agent-card.json
+        status: 200
+        file: null
+        note: soft-200 catch-all, 11-byte body "Invalid key" — not an AgentCard
+      - path: /.well-known/agent.json
+        status: 200
+        file: null
+        note: soft-200 catch-all, 11-byte body "Invalid key" — not an AgentCard
+  - host: hei.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 200
+        file: null
+        note: soft-200 catch-all "Invalid key"; apex is otherwise behind a Cloudflare challenge
+      - path: /.well-known/openid-configuration
+        status: 200
+        file: null
+        note: soft-200 catch-all "Invalid key"
+      - path: /.well-known/oauth-authorization-server
+        status: 200
+        file: null
+        note: soft-200 catch-all "Invalid key"
+      - path: /.well-known/api-catalog
+        status: 200
+        file: null
+        note: soft-200 catch-all "Invalid key"
+      - path: /.well-known/ai-plugin.json
+        status: 200
+        file: null
+        note: soft-200 catch-all "Invalid key"
+      - path: /.well-known/agent-card.json
+        status: 200
+        file: null
+        note: soft-200 catch-all "Invalid key"
+      - path: /.well-known/agent.json
+        status: 200
+        file: null
+        note: soft-200 catch-all "Invalid key"
+  - host: www.hawaiianelectric.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+        file: null
+      - path: /.well-known/openid-configuration
+        status: 404
+        file: null
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+        file: null
+      - path: /.well-known/api-catalog
+        status: 404
+        file: null
+      - path: /.well-known/ai-plugin.json
+        status: 404
+        file: null
+      - path: /.well-known/agent-card.json
+        status: 404
+        file: null
+      - path: /.well-known/agent.json
+        status: 404
+        file: null
+  - host: hawaiianelectric.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+        file: null
+      - path: /.well-known/api-catalog
+        status: 404
+        file: null
+      - path: /.well-known/agent-card.json
+        status: 404
+        file: null
+      - path: /.well-known/agent.json
+        status: 404
+        file: null
+  - host: pacificcurrenthawaii.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+        file: null
+      - path: /.well-known/api-catalog
+        status: 404
+        file: null
+      - path: /.well-known/agent-card.json
+        status: 404
+        file: null
+      - path: /.well-known/agent.json
+        status: 404
+        file: null
+  - host: outagemap-heco.azurewebsites.net
+    documents:
+      - path: /.well-known/agent-card.json
+        status: 200
+        file: null
+        note: >-
+          Blazor SPA catch-all — returns the 1,534-byte index.html shell for every unmatched
+          path, including /swagger/v1/swagger.json and /openapi.json. Not a document.
+  - host: services5.arcgis.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 403
+        file: null
+        note: >-
+          Esri-operated ArcGIS Online host (the tenant that serves Hawaiian Electric's public
+          feature layers), not a Hawaiian Electric host. Returns an 11-byte 403 on every
+          /.well-known/ path.
+      - path: /.well-known/api-catalog
+        status: 403
+        file: null
+      - path: /.well-known/agent-card.json
+        status: 403
+        file: null

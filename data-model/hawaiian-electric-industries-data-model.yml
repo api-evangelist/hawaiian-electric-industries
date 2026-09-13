@@ -1,0 +1,102 @@
+generated: '2026-09-13'
+method: derived
+source: >-
+  openapi/hawaiian-electric-industries-arcgis-extlvm-layer0.json plus live /FeatureServer/0?f=json
+  reads of GridNeeds_HECO and HECO_EV_Stations on
+  https://services5.arcgis.com/gfBpz2hbsVDgru6D/ArcGIS/rest/services
+note: >-
+  Derived field-for-field from the Esri layer metadata Hawaiian Electric serves. Field names,
+  types and lengths are verbatim; no field, entity or relationship has been invented. The
+  services are flat feature layers — every service reports relationships: [] — so there are no
+  declared foreign keys. The joins recorded below are GEOGRAPHIC (shared island / circuit
+  geometry), which is how the provider's own map application combines them, and they are marked
+  as such rather than as declared references.
+entities:
+  - name: ExternalLVMData
+    label: Locational Value Map — available hosting capacity by service address
+    service: extLVM
+    layer: 0
+    url: https://services5.arcgis.com/gfBpz2hbsVDgru6D/ArcGIS/rest/services/extLVM/FeatureServer/0
+    geometry: esriGeometryPolygon
+    spatial_reference: {wkid: 102202, latestWkid: 3750}
+    id_field: OBJECTID
+    display_field: ServiceStreetName
+    capabilities: [Query]
+    fields:
+      - {name: ServiceStreetNumber, type: esriFieldTypeString, length: 10}
+      - {name: ServiceStreetName, type: esriFieldTypeString, length: 60}
+      - {name: CityStateZip, type: esriFieldTypeString, length: 53}
+      - {name: AvailableCapkW, type: esriFieldTypeDouble, note: available hosting capacity in kW}
+      - {name: PenRangeByCircuitPeak, type: esriFieldTypeString, length: 5, note: DG penetration band against circuit peak load}
+      - {name: PenRangeByCircuitDaytimeMin, type: esriFieldTypeString, length: 7, note: DG penetration band against circuit daytime minimum load}
+      - {name: AvailableCapacity, type: esriFieldTypeString, length: 5}
+      - {name: QualifiesForPreApproval, type: esriFieldTypeString, length: 3, note: whether an interconnection request at this address is pre-approval eligible}
+      - {name: OBJECTID, type: esriFieldTypeOID}
+      - {name: Shape__Area, type: esriFieldTypeDouble}
+      - {name: Shape__Length, type: esriFieldTypeDouble}
+    siblings:
+      - {service: extLVM_HELCO, note: Hawaii Electric Light (Hawaii Island) equivalent}
+      - {service: extLVM_MECO, note: Maui Electric (Maui County) equivalent}
+      - {service: extLVM_tst, note: non-production}
+      - {service: extLVM_dev, note: non-production}
+  - name: GridNeeds_HECO
+    label: Published grid needs — capacity, time of day, year and certainty
+    service: GridNeeds_HECO
+    layer: 0
+    url: https://services5.arcgis.com/gfBpz2hbsVDgru6D/ArcGIS/rest/services/GridNeeds_HECO/FeatureServer/0
+    geometry: esriGeometryPolygon
+    id_field: OBJECTID
+    capabilities: [Query]
+    fields:
+      - {name: Need, type: esriFieldTypeString, length: 255}
+      - {name: TimeofDay, type: esriFieldTypeString, length: 255}
+      - {name: GenericName, type: esriFieldTypeString, length: 255}
+      - {name: MWNeed, type: esriFieldTypeString, length: 255}
+      - {name: YearofNeed, type: esriFieldTypeString, length: 255}
+      - {name: CertaintyRating, type: esriFieldTypeString, length: 255}
+      - {name: OBJECTID, type: esriFieldTypeOID}
+      - {name: Shape__Area, type: esriFieldTypeDouble}
+      - {name: Shape__Length, type: esriFieldTypeDouble}
+    siblings:
+      - {service: GridNeeds_HELCO}
+      - {service: GridNeeds_MECO}
+      - {service: GridNeeds_HECO_tst, note: non-production}
+  - name: HECO_EV_Stations
+    label: Hawaiian Electric public EV charging stations
+    service: HECO_EV_Stations
+    layer: 0
+    url: https://services5.arcgis.com/gfBpz2hbsVDgru6D/ArcGIS/rest/services/HECO_EV_Stations/FeatureServer/0
+    geometry: esriGeometryPoint
+    id_field: OBJECTID
+    capabilities: [Query]
+    fields:
+      - {name: OBJECTID, type: esriFieldTypeOID}
+      - {name: Property, type: esriFieldTypeString, length: 254}
+      - {name: Address, type: esriFieldTypeString, length: 254}
+      - {name: Island, type: esriFieldTypeString, length: 254}
+      - {name: Charger_Fe, type: esriFieldTypeString, length: 254, note: truncated shapefile column name}
+      - {name: Hours_of_O, type: esriFieldTypeString, length: 254, note: truncated shapefile column name}
+      - {name: Charger_De, type: esriFieldTypeString, length: 254, note: truncated shapefile column name}
+      - {name: Charger__1, type: esriFieldTypeString, length: 254, note: truncated shapefile column name}
+      - {name: Payment_Op, type: esriFieldTypeString, length: 254, note: truncated shapefile column name}
+      - {name: Additional, type: esriFieldTypeString, length: 254}
+      - {name: Longitude, type: esriFieldTypeDouble}
+      - {name: Latitude, type: esriFieldTypeDouble}
+      - {name: Charging_S, type: esriFieldTypeString, length: 254, note: truncated shapefile column name}
+relationships: []
+relationship_note: >-
+  Every service reports relationships: [] and no field carries a foreign key. ExternalLVMData,
+  GridNeeds_HECO and HECO_EV_Stations are joined only by geography (overlapping polygons /
+  contained points) and by the operating-utility suffix in the service name — HECO (Oahu),
+  HELCO (Hawaii Island), MECO (Maui County). Recording a has_many here would be an invention.
+data_quality_notes:
+  - >-
+    Seven HECO_EV_Stations fields carry truncated 10-character names (Charger_Fe, Hours_of_O,
+    Charger_De, Charger__1, Payment_Op, Charging_S) — the layer was published from a shapefile
+    and the original column names are not recoverable from the service metadata.
+  - >-
+    MWNeed, YearofNeed and CertaintyRating are typed as strings, not numerics, so a consumer must
+    parse them.
+  - >-
+    Test and development services (extLVM_tst, extLVM_dev, GridNeeds_*_tst, PSPS_Zoom_tst_export_gdb)
+    are publicly shared alongside production in the same catalog, with no field marking which is which.

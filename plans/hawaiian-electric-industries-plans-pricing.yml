@@ -1,0 +1,20 @@
+generated: '2026-09-13'
+method: searched
+source: https://www.hawaiianelectric.com/billing-and-payment/rates-and-regulations
+note: >-
+  Hawaiian Electric Industries sells regulated electric service, not API access. There is no
+  developer plan, no metered API tier, no free tier and no paid tier — the public ArcGIS feature
+  services are served anonymously at no charge with no registration, and the internal outage API
+  is not offered to third parties at any price. Electricity tariffs are filed with and approved by
+  the Hawaii Public Utilities Commission and published as an effective rate summary; they price
+  kilowatt-hours, not API calls, so they are recorded here as context rather than as plans.
+plan_count: 0
+plans: []
+context:
+  - label: Effective Rate Summary (regulated electricity tariffs)
+    url: https://www.hawaiianelectric.com/billing-and-payment/rates-and-regulations/effective-rate-summary
+    status: 200
+    note: PUC-approved retail electricity rates — not an API price list.
+  - label: Rates and Regulations
+    url: https://www.hawaiianelectric.com/billing-and-payment/rates-and-regulations
+    status: 200

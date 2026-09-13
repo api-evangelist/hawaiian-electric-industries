@@ -1,14 +1,14 @@
 aid: hawaiian-electric-industries
 name: Hawaiian Electric Industries
-description: >-
-  Hawaiian Electric Industries (HEI) is a Hawaii-based holding company whose
-  primary subsidiaries provide electric utility service to roughly 95% of
-  Hawaii's residents through Hawaiian Electric, and clean-energy investments
-  through Pacific Current. HEI does not publish public developer APIs at this
-  time; this index tracks the company and its subsidiaries for API discovery
-  purposes.
-url: >-
-  https://raw.githubusercontent.com/api-evangelist/hawaiian-electric-industries/refs/heads/main/apis.yml
+description: 'Hawaiian Electric Industries (HEI) is a Honolulu-based holding company whose principal subsidiary,
+  Hawaiian Electric, delivers electricity to roughly 95% of Hawaii''s residents through three operating
+  utilities — Hawaiian Electric (Oahu), Hawaii Electric Light (Hawaii Island) and Maui Electric (Maui
+  County) — alongside Pacific Current, its clean-energy and sustainability investment arm. HEI runs no
+  developer program and publishes no OpenAPI, SDK or MCP server. It does serve one real, anonymously callable
+  machine-readable surface: a public Esri ArcGIS REST feature-service catalog carrying the Locational
+  Value Maps, published grid needs and EV charging locations that its own hawaiianelectric.com map applications
+  consume.'
+url: https://raw.githubusercontent.com/api-evangelist/hawaiian-electric-industries/refs/heads/main/apis.yml
 type: Index
 deliveryModel:
   model: unknown
@@ -34,40 +34,114 @@ accessModel:
   method: derived
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/hawaiian-electric-industries.png
 tags:
-  - Energy
-  - Utilities
-  - Holding Company
-  - Hawaii
-  - Fortune 1000
+- Energy
+- Utilities
+- Electricity
+- Grid
+- Holding Company
+- Hawaii
+- Fortune 1000
+- Geospatial
+- ArcGIS
+- Open Data
+- Locational Value Map
+- EV Charging
 created: '2026-03-24'
-modified: '2026-04-28'
+modified: '2026-09-13'
 specificationVersion: '0.23'
-position: Consuming
+position: Producing
 access: 3rd-Party
-apis: []
+apis:
+- name: Hawaiian Electric Grid Data (ArcGIS REST Feature Services)
+  description: 'The public Esri ArcGIS Online feature-service catalog Hawaiian Electric serves under tenant
+    gfBpz2hbsVDgru6D. Twenty-three FeatureServers are shared publicly and answer anonymous queries: the
+    External Locational Value Map layers (extLVM, extLVM_HELCO, extLVM_MECO) that report available hosting
+    capacity, DG penetration bands and pre-approval eligibility per service address; the published GridNeeds
+    layers (HECO/HELCO/MECO) carrying need, MW, year and certainty rating; HECO_EV_Stations; and EV-load,
+    alternative-fuel and ALICE datasets. Every service is capabilities: Query — read-only — and returns
+    JSON, GeoJSON, CSV, KML, GeoPackage and shapefile. These exact URLs are loaded by Hawaiian Electric''s
+    own map application at www.hawaiianelectric.com/prebuilt/external_lvm/, which is how the tenant is
+    attributed to this company.'
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/hawaiian-electric-industries.png
+  humanURL: https://www.hawaiianelectric.com/clean-energy-hawaii/integration-tools-and-resources/locational-value-maps
+  baseURL: https://services5.arcgis.com/gfBpz2hbsVDgru6D/ArcGIS/rest/services
+  tags:
+  - Geospatial
+  - ArcGIS
+  - Grid
+  - Interconnection
+  - Hosting Capacity
+  - EV Charging
+  - Open Data
+  properties:
+  - type: ArcGIS
+    url: openapi/hawaiian-electric-industries-arcgis-rest-services.json
+  - type: ArcGIS
+    url: openapi/hawaiian-electric-industries-arcgis-extlvm-featureserver.json
+  - type: ArcGIS
+    url: openapi/hawaiian-electric-industries-arcgis-extlvm-layer0.json
+  - type: ArcGIS
+    url: openapi/hawaiian-electric-industries-arcgis-gridneeds-heco-featureserver.json
+  - type: ArcGIS
+    url: openapi/hawaiian-electric-industries-arcgis-heco-ev-stations-featureserver.json
+  - type: APIReference
+    url: https://services5.arcgis.com/gfBpz2hbsVDgru6D/ArcGIS/rest/services?f=json
+  - type: Documentation
+    url: https://www.hawaiianelectric.com/clean-energy-hawaii/integration-tools-and-resources/locational-value-maps
+  - type: Authentication
+    url: authentication/hawaiian-electric-industries-authentication.yml
+  - type: Conventions
+    url: conventions/hawaiian-electric-industries-conventions.yml
+  - type: DataModel
+    url: data-model/hawaiian-electric-industries-data-model.yml
+  - type: RateLimits
+    url: rate-limits/hawaiian-electric-industries-rate-limits.yml
+  - type: Conformance
+    url: conformance/hawaiian-electric-industries-conformance.yml
+  - type: Lifecycle
+    url: lifecycle/hawaiian-electric-industries-lifecycle.yml
+  - type: Plans
+    url: plans/hawaiian-electric-industries-plans-pricing.yml
+  - type: ErrorCatalog
+    url: errors/hawaiian-electric-industries-problem-types.yml
 common:
-  - type: DomainSecurity
-    url: security/hawaiian-electric-industries-domain-security.yml
-  - type: LinkedIn
-    url: https://www.linkedin.com/company/hawaiianelectricindustries
-  - type: Website
-    url: https://www.hei.com/
-  - type: Subsidiary
-    url: https://www.hawaiianelectric.com/
-    name: Hawaiian Electric
-  - type: Subsidiary
-    url: https://pacificcurrent.com/
-    name: Pacific Current
-  - type: InvestorRelations
-    url: https://www.hei.com/investor-relations/
-  - type: SECFilings
-    url: https://www.hei.com/investor-relations/sec-filings/
-  - type: PressReleases
-    url: https://www.hei.com/news/
-  - type: Sustainability
-    url: https://www.hei.com/sustainability/
-  - type: ContactUs
-    url: https://www.hei.com/contact-us/
+- type: DomainSecurity
+  url: security/hawaiian-electric-industries-domain-security.yml
+- type: LinkedIn
+  url: https://www.linkedin.com/company/hawaiianelectricindustries
+- type: Website
+  url: https://www.hei.com/
+- type: Subsidiary
+  url: https://www.hawaiianelectric.com/
+  name: Hawaiian Electric
+- type: InvestorRelations
+  url: https://www.hei.com/investor-relations/
+- type: PressReleases
+  url: https://www.hei.com/news/
+- type: Sustainability
+  url: https://www.hei.com/sustainability/
+- type: Subsidiary
+  url: https://pacificcurrenthawaii.com/
+  name: Pacific Current
+- type: SECFilings
+  url: https://www.hei.com/investor-relations/reports-and-filings/default.aspx
+- type: ContactUs
+  url: https://www.hei.com/investor-relations/contact-us/default.aspx
+- type: TermsOfService
+  url: https://www.hawaiianelectric.com/terms-of-use
+- type: PrivacyPolicy
+  url: https://www.hawaiianelectric.com/privacy-notice/customer-information-privacy-policy
+- type: Blog
+  url: https://www.hawaiianelectric.com/about-us/newsroom
+- type: LLMsTxt
+  url: llms/hawaiian-electric-industries-llms.txt
+- type: Packages
+  url: packages/hawaiian-electric-industries-packages.yml
 maintainers:
-  - FN: Kin Lane
-    email: kin@apievangelist.com
+- FN: Kin Lane
+  email: kin@apievangelist.com
+x-enrichment:
+  date: '2026-09-13'
+  status: enriched
+  artifacts_added: 16
+  pass: local-v3

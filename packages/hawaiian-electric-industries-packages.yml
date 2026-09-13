@@ -1,0 +1,30 @@
+generated: '2026-09-13'
+method: searched
+source: >-
+  Registry searches against registry.npmjs.org, pypi.org, rubygems.org, crates.io and
+  api.github.com, plus a read of every developer-facing page on hawaiianelectric.com.
+note: >-
+  No first-party Hawaiian Electric or HEI client library exists on any public package registry.
+  npm search for "hawaiian electric" returns only the unrelated @electric-sql/* family; PyPI has
+  no hawaiian-electric / heco-api / hei-api project (404 on each); RubyGems and crates.io return
+  empty result sets. A GitHub organization named `Hawaiian-Electric` exists (created 2025-09-23)
+  but carries zero public repositories and no name, blog, email or location, so it cannot be
+  attributed to this company and is not wired as a GitHubOrganization pointer.
+package_count: 0
+packages: []
+registries_checked:
+  - registry: npm
+    endpoint: https://registry.npmjs.org/-/v1/search?text=hawaiian%20electric
+    result: no first-party package
+  - registry: pypi
+    endpoint: https://pypi.org/pypi/hawaiian-electric/json
+    result: 404 (also 404 for heco-api, hei-api)
+  - registry: rubygems
+    endpoint: https://rubygems.org/api/v1/search.json?query=hawaiian+electric
+    result: empty
+  - registry: crates.io
+    endpoint: https://crates.io/api/v1/crates?q=hawaiian+electric
+    result: empty
+  - registry: github
+    endpoint: https://api.github.com/orgs/Hawaiian-Electric/repos
+    result: 0 public repositories, org unattributed

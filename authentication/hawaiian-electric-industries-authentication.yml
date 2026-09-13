@@ -1,0 +1,69 @@
+generated: '2026-09-13'
+method: probed
+source: >-
+  Live probes of https://services5.arcgis.com/gfBpz2hbsVDgru6D/ArcGIS/rest/services,
+  https://outagemap-api-heco.azurewebsites.net/api/v1/outages and the login surfaces linked from
+  www.hawaiianelectric.com.
+docs: null
+note: >-
+  Hawaiian Electric publishes NO authentication documentation. Everything below was established by
+  probe, not by reading a provider auth page, and is recorded as observed behaviour.
+schemes:
+  - id: anonymous
+    type: none
+    surface: ArcGIS REST feature services (public)
+    base_url: https://services5.arcgis.com/gfBpz2hbsVDgru6D/ArcGIS/rest/services
+    required: false
+    evidence: https://services5.arcgis.com/gfBpz2hbsVDgru6D/ArcGIS/rest/services/extLVM/FeatureServer/0/query?where=1%3D1&returnCountOnly=true&f=json
+    http_status: 200
+    detail: >-
+      Anonymous GET succeeds. No API key, token, referer check or CORS restriction was
+      encountered. The response carries `vary: X-Esri-Authorization`, so an ArcGIS token is
+      accepted if presented but is not required for read access.
+  - id: bearer-internal
+    type: http
+    scheme: bearer
+    surface: Outage map backend (first-party, undocumented)
+    base_url: https://outagemap-api-heco.azurewebsites.net/api/v1
+    required: true
+    evidence: https://outagemap-api-heco.azurewebsites.net/api/v1/outages
+    http_status: 401
+    detail: >-
+      Answers `HTTP/1.1 401 Unauthorized` with `WWW-Authenticate: Bearer` and an empty body.
+      Tokens are minted for the map's own Blazor client by a companion service at
+      https://ext-access-heco.azurewebsites.net/ (v1), named in the app's public appsettings.json
+      with an AccessTokenLifetime of 120. No token endpoint, registration flow, scope list or
+      OAuth metadata document is published — there is no way for a third party to obtain a
+      credential. Treat this as a private backend, not an available API.
+  - id: customer-login-sap
+    type: session
+    surface: Customer self-service portal (My Energy Use, Green Button download)
+    base_url: https://eservice.hawaiianelectric.com/bdisu/logon.sap
+    required: true
+    evidence: https://www.hawaiianelectric.com/clean-energy-hawaii/grid-modernization-technologies/advanced-meters/my-energy-use-portal
+    detail: >-
+      SAP Business Server Page logon for retail customers. Human web session only; no
+      programmatic or delegated-access path is offered, and Green Button data is reached through
+      it as a file download rather than through an ESPI API.
+  - id: contractor-login-cit
+    type: session
+    surface: Customer Interconnection Tool (CIT)
+    base_url: https://forms.hawaiianelectric.com/login
+    required: true
+    evidence: https://www.hawaiianelectric.com/products-and-services/smart-renewable-energy-programs/cit-cid
+    detail: >-
+      Account-based web login used by customers and solar contractors to file interconnection and
+      service applications. Human web application; no API.
+discovery_documents:
+  openid_configuration: null
+  oauth_authorization_server: null
+  oauth_protected_resource: null
+  note: >-
+    None served. www.hei.com answers HTTP 200 with an 11-byte "Invalid key" body for every
+    /.well-known/ path — a catch-all, not metadata. See
+    well-known/hawaiian-electric-industries-well-known.yml.
+delegated_identity:
+  supported: false
+  note: >-
+    No OAuth consent flow exists for customer energy data. Green Button Connect My Data, which
+    would be the standard delegated path in this sector, is not published.

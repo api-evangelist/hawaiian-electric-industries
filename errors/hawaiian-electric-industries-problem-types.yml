@@ -1,0 +1,80 @@
+generated: '2026-09-13'
+method: probed
+source: >-
+  Live error responses from
+  https://services5.arcgis.com/gfBpz2hbsVDgru6D/ArcGIS/rest/services and from
+  https://outagemap-api-heco.azurewebsites.net/api/v1/outages, probed 2026-09-13.
+docs: null
+format: esri-error-envelope
+note: >-
+  Hawaiian Electric publishes no error reference. Every entry below is a response body actually
+  returned by the provider's surface — nothing is inferred from a spec, because there is no spec.
+  THE HEADLINE FACT FOR AN AGENT: the ArcGIS feature services return errors with HTTP 200 and an
+  `error` object in the body. Branching on the status code alone will read a failed query as a
+  successful empty result. This is NOT RFC 9457 and the responses are application/json, not
+  application/problem+json.
+envelope:
+  media_type: application/json
+  http_status: 200
+  shape: '{"error": {"code": <int>, "message": <string>, "details": [<string>, ...]}}'
+  fields:
+    - {name: error.code, type: integer, note: Esri error code; 400 for every malformed request observed}
+    - {name: error.message, type: string, note: can be an EMPTY STRING even on a real failure — see layer-not-found}
+    - {name: error.details, type: array of string, note: the only field that names the actual problem in several cases}
+problem_types:
+  - id: invalid-url
+    code: 400
+    http_status: 200
+    title: Invalid URL
+    detail: 'Invalid URL'
+    observed_at: https://services5.arcgis.com/gfBpz2hbsVDgru6D/ArcGIS/rest/services/doesNotExist/FeatureServer?f=json
+    cause: >-
+      The service name does not exist, or the path segment is not one this tenant serves — the
+      same body is returned for /OGCFeatureServer, which is not enabled.
+    remediation: >-
+      Re-read the service catalog at /ArcGIS/rest/services?f=json and use a name from services[].
+      Remember the production name has no _tst or _dev suffix.
+  - id: layer-not-found
+    code: 400
+    http_status: 200
+    title: ''
+    detail: 'The requested layer (layerId: 99) was not found.'
+    observed_at: https://services5.arcgis.com/gfBpz2hbsVDgru6D/ArcGIS/rest/services/extLVM/FeatureServer/99?f=json
+    cause: The layer id does not exist on that FeatureServer.
+    remediation: >-
+      Read layers[] from the FeatureServer root. Every public service here has exactly one layer,
+      id 0. Note that `message` is an empty string on this error — read `details`.
+  - id: invalid-query-parameters-field
+    code: 400
+    http_status: 200
+    title: Cannot perform query. Invalid query parameters.
+    detail: "'Invalid field: NOPE' parameter is invalid"
+    observed_at: https://services5.arcgis.com/gfBpz2hbsVDgru6D/ArcGIS/rest/services/extLVM/FeatureServer/0/query?where=NOPE%3D1&f=json
+    cause: The WHERE clause references a column the layer does not have.
+    remediation: >-
+      Take field names from the layer's fields[] — see
+      data-model/hawaiian-electric-industries-data-model.yml. Names are case-sensitive and several
+      EV-station columns are truncated to 10 characters (Charger_Fe, Hours_of_O, Payment_Op).
+  - id: invalid-query-parameters-outfields
+    code: 400
+    http_status: 200
+    title: Cannot perform query. Invalid query parameters.
+    detail: "'outFields' parameter is invalid"
+    observed_at: https://services5.arcgis.com/gfBpz2hbsVDgru6D/ArcGIS/rest/services/extLVM/FeatureServer/0/query?where=1%3D1&outFields=NoSuchField&f=json
+    cause: outFields names a column that does not exist on the layer.
+    remediation: Use `outFields=*` or a comma list drawn from fields[].
+  - id: unauthorized-outage-api
+    code: 401
+    http_status: 401
+    title: Unauthorized
+    detail: 'Empty body; WWW-Authenticate: Bearer'
+    observed_at: https://outagemap-api-heco.azurewebsites.net/api/v1/outages
+    cause: >-
+      The outage-map backend requires a bearer token issued to Hawaiian Electric's own Blazor
+      client by https://ext-access-heco.azurewebsites.net/.
+    remediation: >-
+      NONE AVAILABLE. There is no public registration, token endpoint or scope documentation.
+      This is a private backend; do not build against it.
+    note: >-
+      This is the one surface in this record that uses a real HTTP status rather than a 200
+      envelope, because it is ASP.NET rather than ArcGIS.

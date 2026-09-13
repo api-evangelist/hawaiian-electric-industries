@@ -1,0 +1,114 @@
+generated: '2026-09-13'
+method: derived
+source: >-
+  openapi/hawaiian-electric-industries-arcgis-extlvm-featureserver.json,
+  openapi/hawaiian-electric-industries-arcgis-extlvm-layer0.json, and live anonymous probes of
+  the /query endpoint on services5.arcgis.com.
+note: >-
+  Hawaiian Electric publishes no API style guide. Every convention below is read off the Esri
+  ArcGIS REST Feature Service contract the provider actually serves, or observed on a live
+  response. The surface is READ-ONLY — capabilities is "Query" on all three services — which is
+  why idempotency, reversibility and dry-run are all `na` rather than `none`.
+auth:
+  style: none
+  detail: >-
+    The public feature services accept anonymous requests; no token, key or referer is required.
+    `vary: X-Esri-Authorization` is returned, so an ArcGIS token is honored if supplied but is not
+    needed for read access.
+  see: authentication/hawaiian-electric-industries-authentication.yml
+base_urls:
+  - https://services5.arcgis.com/gfBpz2hbsVDgru6D/ArcGIS/rest/services
+content_negotiation:
+  style: query-parameter
+  parameter: f
+  values: [json, geojson, pjson, html, pbf]
+  note: >-
+    Format is chosen with `?f=`, not with an Accept header. `f=geojson` yields RFC 7946 output;
+    supportedExportFormats also lists csv, shapefile, sqlite, geoPackage, filegdb,
+    featureCollection, kml and excel.
+pagination:
+  style: offset
+  params:
+    offset: resultOffset
+    limit: resultRecordCount
+  response_fields:
+    - exceededTransferLimit
+  page_size_default: 1000
+  page_size_max: 2000
+  note: >-
+    advancedQueryCapabilities.supportsPagination is true. A response that hit the cap sets
+    `exceededTransferLimit: true`; the client advances resultOffset until it is absent.
+    See rate-limits/hawaiian-electric-industries-rate-limits.yml.
+filtering:
+  style: sql-where
+  params: [where, objectIds, geometry, geometryType, spatialRel, time, distance, units]
+  note: >-
+    supportsSqlExpression, supportsQueryWithDistance, supportsOrderBy, supportsDistinct,
+    supportsStatistics and supportsPercentileStatistics are all true on ExternalLVMData.
+sparse_fields:
+  supported: true
+  param: outFields
+  note: "`outFields=*` returns everything; a comma list restricts it. `returnGeometry=false` drops geometry."
+sorting:
+  supported: true
+  param: orderByFields
+versioning:
+  style: path-and-payload
+  detail: >-
+    The service root reports `currentVersion: 12`. There is no version segment a caller pins and
+    no documented deprecation channel; Esri advances the tenant's currentVersion on its own
+    schedule. Service NAMES carry the environment instead — the same catalog exposes
+    extLVM/extLVM_tst/extLVM_dev and GridNeeds_HECO/GridNeeds_HECO_tst side by side, so a caller
+    must know by convention that the un-suffixed name is production.
+error_envelope:
+  shape: esri
+  media_type: application/json
+  http_status: 200
+  example: '{"error":{"code":400,"message":"Invalid URL","details":["Invalid URL"]}}'
+  note: >-
+    ERRORS ARE RETURNED WITH HTTP 200. A client that branches on status code alone will treat a
+    failed query as a success — it must parse the body and test for an `error` key. Not RFC 9457.
+request_id:
+  supported: true
+  header: x-arcgis-trace-id
+  note: >-
+    Esri also returns `x-arcgis-upstream` and `etag`. Neither is documented by Hawaiian Electric;
+    both were observed on live responses.
+rate_limit_signaling:
+  headers: []
+  note: >-
+    No standard rate-limit headers. `x-esri-query-request-units` reports the tenant's credit cost
+    for the query, not the caller's remaining quota. See rate-limits/.
+caching:
+  cache_control: public, max-age=30, s-maxage=30
+  etag: true
+  layer_cacheMaxAge: 30
+  data_refresh: >-
+    Hawaiian Electric states the Locational Value Map data is updated nightly on weekdays, so the
+    30-second edge cache is far shorter than the underlying data cadence.
+idempotency:
+  coverage: na
+  mechanism: none
+  scope: []
+  note: >-
+    NOT APPLICABLE, not missing. capabilities is "Query" on every public service — there is no
+    create, update, delete or applyEdits surface to replay, so there is nothing for an
+    Idempotency-Key to protect. No `Idempotency` pointer is emitted.
+reversibility:
+  coverage: na
+  operations: []
+  note: >-
+    NOT APPLICABLE. The public surface is read-only, so no action an agent can take through it
+    needs to be taken back. Hawaiian Electric's write surfaces — the Customer Interconnection Tool
+    at forms.hawaiianelectric.com and the SAP customer portal at eservice.hawaiianelectric.com —
+    are human web applications behind a login, not APIs, and publish no reversal operation or
+    window. No window is asserted here because none is stated.
+dry_run_mode:
+  coverage: na
+  note: Read-only surface; a rehearsal mode has nothing to rehearse.
+cross_links:
+  errors: null
+  lifecycle: lifecycle/hawaiian-electric-industries-lifecycle.yml
+  authentication: authentication/hawaiian-electric-industries-authentication.yml
+  rate_limits: rate-limits/hawaiian-electric-industries-rate-limits.yml
+  data_model: data-model/hawaiian-electric-industries-data-model.yml
