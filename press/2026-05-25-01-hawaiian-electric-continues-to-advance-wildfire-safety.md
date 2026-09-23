@@ -1,7 +1,9 @@
 ---
 title: Hawaiian Electric Continues to Advance Wildfire Safety ...
 url: https://www.hei.com/investor-relations/news-and-events/news/news-details/2024/Hawaiian-Electric-Continues-to-Advance-Wildfire-Safety-Efforts/default.aspx
-date: '2026-05-25'
+published: ''
+date_basis: harvested
+harvested: '2026-05-25'
 query: '"Hawaiian Electric Industries" press release artificial intelligence'
 position: 1
 source: serpapi-google
