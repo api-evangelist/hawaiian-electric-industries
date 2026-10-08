@@ -105,6 +105,10 @@ apis:
   - type: ErrorCatalog
     url: errors/hawaiian-electric-industries-problem-types.yml
 common:
+- type: Plans
+  url: plans/hawaiian-electric-industries-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/hawaiian-electric-industries-rate-limits.yml
 - type: DomainSecurity
   url: security/hawaiian-electric-industries-domain-security.yml
 - type: LinkedIn
